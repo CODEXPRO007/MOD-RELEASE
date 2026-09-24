@@ -1,0 +1,12 @@
+{
+  "name": "kuro-panel",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.5.0"
+  }
+}
