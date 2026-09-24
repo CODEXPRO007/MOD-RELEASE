@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Kuro Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04060b;--s1:#0a0f1c;--s2:#0e1524;--bd:#16202f;--bdb:#25344c;--tx:#eaf0f8;--dm:#8896ac;--ft:#4d5a70;--ac:#00ff9d;--dg:#ff3b5c;--wn:#ffb800;--mo:'JetBrains Mono',monospace;--sa:'Inter',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font-family:var(--sa);min-height:100vh;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;background-image:radial-gradient(700px 400px at 20% -10%,rgba(0,255,157,.07),transparent 60%)}
+.hide{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+input,select,textarea{width:100%;padding:13px 14px;background:var(--bg);border:1px solid var(--bdb);border-radius:10px;font-size:14px;outline:none;transition:.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--ac)}
+label{display:block;font-family:var(--mo);font-size:10px;color:var(--ac);letter-spacing:1.4px;text-transform:uppercase;margin-bottom:6px}
+.fld{margin-bottom:12px}
+.btn{padding:13px 20px;background:var(--ac);color:#04060b;border:0;border-radius:10px;font-family:var(--mo);font-weight:700;font-size:13px;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.5}
+.btn.g{background:transparent;border:1px solid var(--bdb);color:var(--dm)}
+.btn.g:active{border-color:var(--ac);color:var(--ac)}
+.btn.sm{width:auto;padding:9px 14px;font-size:11px}
+.btn.dg{background:rgba(255,59,92,.12);color:var(--dg);border:1px solid rgba(255,59,92,.3)}
+.msg{padding:10px 12px;border-radius:8px;font-family:var(--mo);font-size:12px;margin-top:10px}
+.msg.err{background:rgba(255,59,92,.1);border:1px solid rgba(255,59,92,.3);color:#ff8ba0}
+.msg.ok{background:rgba(0,255,157,.1);border:1px solid rgba(0,255,157,.3);color:var(--ac)}
+.msg.info{background:rgba(0,180,255,.08);border:1px solid rgba(0,180,255,.3);color:#7dcfff}
+
+/* LOGIN */
+#login{min-height:100vh;display:grid;place-items:center;padding:20px}
+.card{width:100%;max-width:400px;background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--bdb);border-radius:18px;padding:26px;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px}
+.mark{width:48px;height:48px;border:2px solid var(--ac);border-radius:12px;display:grid;place-items:center;background:rgba(0,255,157,.1);color:var(--ac);font-family:var(--mo);font-weight:700;font-size:20px}
+h1{font-size:22px;font-weight:800;text-align:center;margin-bottom:2px}
+h1 span{color:var(--ac)}
+.sub{text-align:center;color:var(--dm);font-family:var(--mo);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:22px}
+
+/* DASH */
+#dash{display:none;min-height:100vh;padding-bottom:80px}
+#dash.on{display:block}
+.top{position:sticky;top:0;z-index:10;background:rgba(4,6,11,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--bd);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.top .who{font-family:var(--mo);font-size:11px;color:var(--dm);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top .who b{color:var(--ac)}
+.wrap{padding:16px}
+.grid{display:grid;gap:12px;margin-bottom:16px}
+.grid.g2{grid-template-columns:1fr 1fr}
+.grid.g3{grid-template-columns:repeat(3,1fr)}
+.st{background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--bd);border-radius:12px;padding:14px}
+.st .k{font-family:var(--mo);font-size:9px;color:var(--ft);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px}
+.st .v{font-family:var(--mo);font-size:22px;font-weight:700;color:var(--tx)}
+.st .v.g{color:var(--ac)}.st .v.y{color:var(--wn)}.st .v.r{color:var(--dg)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.row>*{flex:1;min-width:0}
+.sec{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px}
+.sec h3{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sec h3 span{font-family:var(--mo);font-size:10px;color:var(--dm);letter-spacing:1px;text-transform:uppercase}
+.kcard{background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:8px;transition:.15s}
+.kcard:active{border-color:var(--ac)}
+.kcard .l1{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.kcard .kk{font-family:var(--mo);font-size:11px;color:var(--ac);font-weight:700;word-break:break-all}
+.kcard .l2{display:flex;gap:8px;flex-wrap:wrap;font-family:var(--mo);font-size:10px;color:var(--dm)}
+.kcard .l3{display:flex;gap:6px;margin-top:8px}
+.tg{display:inline-block;padding:3px 8px;border-radius:5px;font-family:var(--mo);font-size:9px;letter-spacing:.6px;text-transform:uppercase;font-weight:700}
+.tg.a{background:rgba(0,255,157,.12);color:var(--ac)}
+.tg.d{background:rgba(255,184,0,.12);color:var(--wn)}
+.tg.e{background:rgba(255,59,92,.12);color:var(--dg)}
+.tg.t{background:rgba(155,107,255,.12);color:#c4a3ff}
+.ic{width:30px;height:30px;display:grid;place-items:center;background:var(--bg);border:1px solid var(--bd);border-radius:8px;color:var(--dm);cursor:pointer;font-size:14px;font-weight:700;transition:.15s}
+.ic:active{border-color:var(--ac);color:var(--ac)}
+.ic.dg:active{border-color:var(--dg);color:var(--dg)}
+.ic svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.em{padding:30px 16px;text-align:center;color:var(--ft);font-family:var(--mo);font-size:12px}
+.toolbar{display:flex;gap:8px;margin-bottom:12px}
+.toolbar input{flex:1}
+.toolbar select{width:auto;min-width:110px}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:10px 16px;background:rgba(4,6,11,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--bd);position:sticky;top:53px;z-index:9}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;padding:8px 14px;border-radius:8px;background:var(--bg);border:1px solid var(--bd);font-family:var(--mo);font-size:11px;color:var(--dm);cursor:pointer;transition:.15s;letter-spacing:.5px}
+.tab.on{background:rgba(0,255,157,.12);border-color:rgba(0,255,157,.3);color:var(--ac)}
+.view{display:none}
+.view.on{display:block}
+
+/* MODAL */
+.mb{position:fixed;inset:0;background:rgba(4,6,11,.85);backdrop-filter:blur(6px);z-index:100;display:none;align-items:flex-end;justify-content:center;padding:0}
+.mb.on{display:flex}
+@media(min-width:600px){.mb{align-items:center;padding:20px}}
+.mo{width:100%;max-width:480px;background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--bdb);border-radius:18px 18px 0 0;max-height:90vh;overflow-y:auto;animation:up .28s cubic-bezier(.2,.7,.3,1)}
+@media(min-width:600px){.mo{border-radius:18px;animation:pop .28s}}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+@keyframes pop{from{transform:scale(.95);opacity:0}to{transform:none;opacity:1}}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:var(--s2);z-index:1}
+.mh h3{font-size:15px}
+.mb2{padding:18px}
+.mf{display:flex;gap:10px;padding:14px 18px;border-top:1px solid var(--bd);background:rgba(0,0,0,.2);position:sticky;bottom:0}
+.mf .btn{flex:1}
+.pv{margin-top:10px;padding:12px;background:var(--bg);border:1px dashed var(--ac);border-radius:10px;font-family:var(--mo);font-size:14px;color:var(--ac);text-align:center;letter-spacing:1.5px;font-weight:700;word-break:break-all}
+.pvv{border-color:#9b6bff;color:#c4a3ff}
+
+/* TOAST */
+.tz{position:fixed;top:14px;left:14px;right:14px;z-index:200;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.tt{padding:12px 14px;border-radius:10px;background:rgba(10,15,28,.97);border:1px solid var(--bdb);box-shadow:0 12px 40px rgba(0,0,0,.6);font-size:13px;font-weight:600;animation:tin .25s;pointer-events:auto}
+.tt.ok{border-color:rgba(0,255,157,.4);color:var(--ac)}
+.tt.err{border-color:rgba(255,59,92,.4);color:var(--dg)}
+.tt.out{animation:tout .25s forwards}
+@keyframes tin{from{transform:translateY(-20px);opacity:0}to{transform:none;opacity:1}}
+@keyframes tout{to{transform:translateY(-20px);opacity:0}}
+.sp{display:inline-block;width:13px;height:13px;border:2px solid rgba(0,0,0,.2);border-top-color:currentColor;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="card">
+    <div class="brand"><div class="mark">K</div></div>
+    <h1>KURO <span>PANEL</span></h1>
+    <div class="sub">Key Management</div>
+
+    <div class="fld"><label>Email</label><input type="email" id="em" placeholder="you@example.com" autocomplete="email"></div>
+    <div class="fld"><label>Password</label><input type="password" id="pw" placeholder="••••••••" autocomplete="current-password"></div>
+    <button class="btn" id="btnIn">Sign In</button>
+    <button class="btn g" id="btnUp" style="margin-top:8px">Create Account</button>
+    <button class="btn g" id="btnFp" style="margin-top:8px;font-size:10px;padding:9px">Forgot password?</button>
+    <div id="loginMsg"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dash">
+  <div class="top">
+    <div class="who">Signed in as <b id="topName">—</b></div>
+    <button class="btn g sm" id="btnOut">Sign Out</button>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <div class="tab on" data-v="home">Dashboard</div>
+    <div class="tab" data-v="keys">Keys</div>
+    <div class="tab" data-v="refs">Referrals</div>
+    <div class="tab" data-v="ep">Endpoint</div>
+    <div class="tab" data-v="users" id="tabUsers">Users</div>
+    <div class="tab" data-v="prof">Profile</div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- HOME -->
+    <div class="view on" id="v-home">
+      <div class="grid g3">
+        <div class="st"><div class="k">Total</div><div class="v" id="sT">0</div></div>
+        <div class="st"><div class="k">Active</div><div class="v g" id="sA">0</div></div>
+        <div class="st"><div class="k">Expired</div><div class="v r" id="sE">0</div></div>
+      </div>
+      <div class="sec">
+        <h3>Recent Keys <span>live</span></h3>
+        <div id="recent"></div>
+      </div>
+    </div>
+
+    <!-- KEYS -->
+    <div class="view" id="v-keys">
+      <button class="btn" id="btnGen" style="margin-bottom:12px">+ Generate Key</button>
+      <div class="toolbar">
+        <input id="q" placeholder="Search key...">
+        <select id="fs"><option value="all">All</option><option value="active">Active</option><option value="disabled">Disabled</option><option value="expired">Expired</option></select>
+      </div>
+      <div id="keys"></div>
+    </div>
+
+    <!-- REFS -->
+    <div class="view" id="v-refs">
+      <button class="btn" id="btnGenRef" style="margin-bottom:12px">+ Generate Referral Code</button>
+      <div id="refs"></div>
+    </div>
+
+    <!-- ENDPOINT -->
+    <div class="view" id="v-ep">
+      <div class="sec">
+        <h3>Endpoint URL</h3>
+        <div class="fld"><label>URL</label><input type="url" id="epUrl" placeholder="https://your-app.vercel.app/api/check"></div>
+        <div class="fld"><label>Version</label><input id="epVer" placeholder="2.0.0"></div>
+        <button class="btn" id="btnSaveEp">Save Endpoint</button>
+      </div>
+      <div class="sec">
+        <h3>Lua Snippet <button class="btn g sm" id="btnCopySnip">Copy</button></h3>
+        <div class="pv" id="snip" style="text-align:left;font-size:10px;letter-spacing:0">—</div>
+      </div>
+      <div class="sec">
+        <h3>Where to get endpoint?</h3>
+        <div style="font-size:12px;color:var(--dm);line-height:1.7">
+          Deploy <b style="color:var(--ac)">api/check.js</b> (Vercel function) → URL is <b>https://your-app.vercel.app/api/check</b>. Free, one <code style="background:var(--bg);padding:2px 5px;border-radius:4px;font-family:var(--mo);color:var(--ac)">vercel deploy</code>.
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="view" id="v-users">
+      <div id="users"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="view" id="v-prof">
+      <div class="sec">
+        <h3 id="profName">—</h3>
+        <div style="font-family:var(--mo);font-size:11px;color:var(--dm);margin-bottom:10px" id="profEmail">—</div>
+        <span class="tg t" id="profRole">reseller</span>
+      </div>
+      <div class="sec">
+        <h3>Change Username</h3>
+        <div class="fld"><label>New Username</label><input id="newUn" placeholder="new_handle"></div>
+        <button class="btn" id="btnUn">Update Username</button>
+      </div>
+      <div class="sec">
+        <h3>Change Password</h3>
+        <div class="fld"><label>Current</label><input type="password" id="cPw"></div>
+        <div class="fld"><label>New</label><input type="password" id="nPw"></div>
+        <button class="btn" id="btnPw">Update Password</button>
+      </div>
+      <div class="sec">
+        <h3>My Referral Code</h3>
+        <div class="pv pvv" id="myRef">—</div>
+        <button class="btn g sm" id="btnCopyRef" style="margin-top:10px;width:100%">Copy Code</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SIGNUP -->
+<div class="mb" id="mbUp">
+  <div class="mo">
+    <div class="mh"><h3>Create Account</h3><button class="ic" data-c="mbUp">✕</button></div>
+    <div class="mb2">
+      <div id="setupHint"></div>
+      <div class="fld"><label>Username</label><input id="upUn" placeholder="your_handle"></div>
+      <div class="fld"><label>Email</label><input type="email" id="upEm" placeholder="you@example.com"></div>
+      <div class="fld"><label>Password</label><input type="password" id="upPw" placeholder="min 6 chars"></div>
+      <div class="fld" id="refWrap"><label>Referral Code</label><input id="upRef" placeholder="REFXXXXXX" style="font-family:var(--mo);text-transform:uppercase"></div>
+      <div id="upMsg"></div>
+    </div>
+    <div class="mf"><button class="btn g" data-c="mbUp">Cancel</button><button class="btn" id="btnDoUp">Create</button></div>
+  </div>
+</div>
+
+<!-- MODAL: GENERATE KEY -->
+<div class="mb" id="mbGen">
+  <div class="mo">
+    <div class="mh"><h3>Generate Key</h3><button class="ic" data-c="mbGen">✕</button></div>
+    <div class="mb2">
+      <div class="fld"><label>Tier</label><select id="gTier"><option value="basic">Basic</option><option value="pro" selected>Pro</option><option value="vip">VIP</option></select></div>
+      <div class="row">
+        <div class="fld" style="margin:0"><label>Days</label><input type="number" id="gDays" value="30" min="1"></div>
+        <div class="fld" style="margin:0"><label>Devices</label><input type="number" id="gDev" value="1" min="1" max="10"></div>
+      </div>
+      <div class="fld" style="margin-top:12px"><label>Custom Expiry (optional)</label><input type="date" id="gExp" style="color-scheme:dark"></div>
+      <div class="pv" id="gPv">—</div>
+    </div>
+    <div class="mf"><button class="btn g" data-c="mbGen">Cancel</button><button class="btn" id="btnDoGen">Generate</button></div>
+  </div>
+</div>
+
+<!-- MODAL: GENERATE REF -->
+<div class="mb" id="mbGenRef">
+  <div class="mo">
+    <div class="mh"><h3>Referral Code</h3><button class="ic" data-c="mbGenRef">✕</button></div>
+    <div class="mb2">
+      <div class="fld"><label>Max Uses (0 = ∞)</label><input type="number" id="rMax" value="0" min="0"></div>
+      <div class="pv pvv" id="rPv">—</div>
+    </div>
+    <div class="mf"><button class="btn g" data-c="mbGenRef">Cancel</button><button class="btn" id="btnDoRef">Generate</button></div>
+  </div>
+</div>
+
+<div class="tz" id="tz"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, doc, addDoc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot, query, where, orderBy, serverTimestamp, Timestamp, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const cfg = {
+  apiKey: "AIzaSyAan-u220WR6aLzD-6Ti_alwWHtTmTDbZ4",
+  authDomain: "vipemote-e492e.firebaseapp.com",
+  projectId: "vipemote-e492e",
+  storageBucket: "vipemote-e492e.firebasestorage.app",
+  messagingSenderId: "984753929214",
+  appId: "1:984753929214:web:3f85f32a4764bebed31eaf"
+};
+
+const app = initializeApp(cfg);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const USERS = collection(db,"users"), KEYS = collection(db,"keys"), REFS = collection(db,"referrals");
+const SETUP = doc(db,"config","setup"), CONFIG = doc(db,"config","endpoint");
+
+let U = null, ROLE = "reseller", PROFILE = null;
+let KD = [], UD = [], RD = [];
+let unsubK, unsubU, unsubR, unsubC, unsubP, tick;
+
+/* TOAST */
+function toast(t, kind="ok") {
+  const el = document.createElement("div");
+  el.className = "tt " + kind;
+  el.textContent = t;
+  $("tz").appendChild(el);
+  setTimeout(()=>{ el.classList.add("out"); setTimeout(()=>el.remove(),250); }, 2600);
+}
+
+/* CODE GEN */
+const kc = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const rnd = n => Array.from({length:n},()=>kc[Math.floor(Math.random()*kc.length)]).join("");
+const newKey = () => `KURO-${rnd(5)}-${rnd(5)}-${rnd(5)}`;
+const newRef = () => "REF" + rnd(6);
+
+/* MODAL HELPERS */
+document.querySelectorAll("[data-c]").forEach(b => b.onclick = () => $(b.dataset.c).classList.remove("on"));
+document.querySelectorAll(".mb").forEach(m => m.onclick = e => { if(e.target===m) m.classList.remove("on"); });
+
+/* TABS */
+document.querySelectorAll(".tab").forEach(t => {
+  t.onclick = () => {
+    if (t.dataset.v === "users" && ROLE !== "owner") return toast("Owner only","err");
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+    document.querySelectorAll(".view").forEach(x=>x.classList.remove("on"));
+    t.classList.add("on");
+    $("v-"+t.dataset.v).classList.add("on");
+  };
+});
+
+/* AUTH */
+$("btnIn").onclick = async () => {
+  const em = $("em").value.trim(), pw = $("pw").value;
+  if (!em || !pw) return lmsg("err","Enter email and password");
+  $("btnIn").disabled = true; $("btnIn").innerHTML = '<span class="sp"></span> Signing in';
+  try { await signInWithEmailAndPassword(auth, em, pw); }
+  catch(e){ lmsg("err", clean(e.message)); $("btnIn").disabled=false; $("btnIn").textContent="Sign In"; }
+};
+$("btnFp").onclick = async () => {
+  const em = $("em").value.trim();
+  if (!em) return lmsg("err","Enter email first");
+  try { await sendPasswordResetEmail(auth, em); lmsg("ok","Reset link sent to your email"); }
+  catch(e){ lmsg("err", clean(e.message)); }
+};
+$("btnOut").onclick = () => signOut(auth);
+$("btnUp").onclick = async () => {
+  $("mbUp").classList.add("on");
+  $("upUn").value=""; $("upEm").value=""; $("upPw").value=""; $("upRef").value="";
+  $("upMsg").innerHTML="";
+  try {
+    const s = await getDoc(SETUP);
+    const first = !s.exists() || !s.data().initialized;
+    if (first) {
+      $("refWrap").classList.add("hide");
+      $("setupHint").innerHTML = '<div class="msg info" style="margin-bottom:12px">First user — you become OWNER. No referral needed.</div>';
+    } else {
+      $("refWrap").classList.remove("hide");
+      $("setupHint").innerHTML = '<div class="msg info" style="margin-bottom:12px">Referral code required — ask an existing user.</div>';
+    }
+  } catch {}
+};
+$("btnDoUp").onclick = async () => {
+  const un = $("upUn").value.trim(), em = $("upEm").value.trim(), pw = $("upPw").value;
+  const rf = $("upRef").value.trim().toUpperCase();
+  const needRef = !$("refWrap").classList.contains("hide");
+  if (un.length<3) return umsg("err","Username min 3 chars");
+  if (!/^[a-zA-Z0-9_]+$/.test(un)) return umsg("err","Username: letters/digits/_ only");
+  if (!em) return umsg("err","Email required");
+  if (pw.length<6) return umsg("err","Password min 6 chars");
+  if (needRef && !rf) return umsg("err","Referral code required");
+
+  const uq = await getDocs(query(USERS, where("username","==",un), limit(1)));
+  if (!uq.empty) return umsg("err","Username already taken");
+
+  let refData = null;
+  if (needRef) {
+    const rs = await getDoc(doc(db,"referrals",rf));
+    if (!rs.exists()) return umsg("err","Invalid referral code");
+    const d = rs.data();
+    if (!d.active) return umsg("err","Referral disabled");
+    if (d.maxUses > 0 && (d.uses||0) >= d.maxUses) return umsg("err","Referral limit reached");
+    refData = { id: rf, uses: d.uses||0 };
+  }
+
+  $("btnDoUp").disabled=true; $("btnDoUp").innerHTML='<span class="sp"></span> Creating';
+  try {
+    const c = await createUserWithEmailAndPassword(auth, em, pw);
+    const uid = c.user.uid;
+    const s = await getDoc(SETUP);
+    const first = !s.exists() || !s.data().initialized;
+    const role = first ? "owner" : "reseller";
+    const myRef = newRef();
+
+    await setDoc(doc(db,"users",uid), { uid, username:un, email:em, role, ownReferralCode:myRef, referredBy: needRef?rf:null, createdAt: serverTimestamp() });
+    await setDoc(doc(db,"referrals",myRef), { code:myRef, ownerUid:uid, ownerUsername:un, active:true, uses:0, maxUses:0, createdAt: serverTimestamp() });
+    if (needRef && refData) await updateDoc(doc(db,"referrals",rf), { uses: refData.uses + 1 });
+    if (first) await setDoc(SETUP, { initialized:true, ownerUid:uid, ownerEmail:em, ownerUsername:un, initializedAt: serverTimestamp() });
+
+    toast("Account created — welcome "+un);
+    $("mbUp").classList.remove("on");
+  } catch(e) {
+    umsg("err", clean(e.message));
+    $("btnDoUp").disabled=false; $("btnDoUp").textContent="Create";
+  }
+};
+function lmsg(k,m){ $("loginMsg").innerHTML = `<div class="msg ${k}">${esc(m)}</div>`; }
+function umsg(k,m){ $("upMsg").innerHTML = `<div class="msg ${k}">${esc(m)}</div>`; }
+function clean(m){ return String(m).replace("Firebase: ","").replace(/\(auth.*\)\.?/,"").trim(); }
+
+/* AUTH STATE */
+onAuthStateChanged(auth, async u => {
+  if (!u) {
+    U=null; PROFILE=null;
+    $("login").classList.remove("hide");
+    $("dash").classList.remove("on");
+    $("btnIn").disabled=false; $("btnIn").textContent="Sign In";
+    [unsubK,unsubU,unsubR,unsubC,unsubP].forEach(x=>x&&x());
+    if (tick) clearInterval(tick);
+    return;
+  }
+  U = u;
+  await ensureUser(u);
+  await loadProfile(u);
+  $("login").classList.add("hide");
+  $("dash").classList.add("on");
+  subscribeP(); subscribeK(); subscribeR(); subscribeC();
+  if (ROLE === "owner") { subscribeU(); $("tabUsers").classList.remove("hide"); }
+  else $("tabUsers").classList.add("hide");
+  tick = setInterval(() => { renderK(); renderHome(); }, 15000);
+});
+
+async function ensureUser(u) {
+  const r = doc(db,"users",u.uid);
+  const s = await getDoc(r);
+  if (s.exists()) return;
+  const ss = await getDoc(SETUP);
+  const first = !ss.exists() || !ss.data().initialized;
+  const role = first ? "owner" : "reseller";
+  const un = (u.email||"user").split("@")[0].replace(/[^a-zA-Z0-9_]/g,"");
+  const myRef = newRef();
+  await setDoc(r, { uid:u.uid, username:un, email:u.email, role, ownReferralCode:myRef, referredBy:null, createdAt: serverTimestamp() });
+  await setDoc(doc(db,"referrals",myRef), { code:myRef, ownerUid:u.uid, ownerUsername:un, active:true, uses:0, maxUses:0, createdAt: serverTimestamp() });
+  if (first) await setDoc(SETUP, { initialized:true, ownerUid:u.uid, ownerEmail:u.email, ownerUsername:un, initializedAt: serverTimestamp() });
+}
+async function loadProfile(u) {
+  const s = await getDoc(doc(db,"users",u.uid));
+  PROFILE = s.exists() ? { id:u.uid, ...s.data() } : null;
+  ROLE = PROFILE?.role || "reseller";
+  renderProfile();
+}
+function subscribeP() {
+  if (unsubP) unsubP();
+  unsubP = onSnapshot(doc(db,"users",U.uid), s => {
+    if (!s.exists()) return;
+    PROFILE = { id:s.id, ...s.data() };
+    ROLE = PROFILE.role || "reseller";
+    renderProfile();
+  });
+}
+function subscribeK() {
+  if (unsubK) unsubK();
+  const q = ROLE==="owner" ? query(KEYS, orderBy("createdAt","desc")) : query(KEYS, where("createdBy","==",U.uid), orderBy("createdAt","desc"));
+  unsubK = onSnapshot(q, s => {
+    KD = s.docs.map(d=>({id:d.id,...d.data()}));
+    renderK(); renderHome();
+  });
+}
+function subscribeU() {
+  if (unsubU) unsubU();
+  unsubU = onSnapshot(query(USERS, orderBy("createdAt","desc")), s => {
+    UD = s.docs.map(d=>({id:d.id,...d.data()}));
+    renderU();
+  });
+}
+function subscribeR() {
+  if (unsubR) unsubR();
+  const q = ROLE==="owner" ? query(REFS, orderBy("createdAt","desc")) : query(REFS, where("ownerUid","==",U.uid), orderBy("createdAt","desc"));
+  unsubR = onSnapshot(q, s => {
+    RD = s.docs.map(d=>({id:d.id,...d.data()}));
+    renderR();
+  });
+}
+function subscribeC() {
+  if (unsubC) unsubC();
+  unsubC = onSnapshot(CONFIG, s => {
+    const d = s.exists() ? s.data() : {};
+    $("epUrl").value = d.url || "";
+    $("epVer").value = d.version || "2.0.0";
+    const url = d.url || "https://your-app.vercel.app/api/check";
+    $("snip").textContent = `local url = "${url}"\n-- GET ?key=KURO-XXXXX-XXXXX-XXXXX&device=ANDROID_ID\n-- → { status, tier, expires, msg }`;
+  });
+}
+
+/* STATUS */
+function kStatus(k) {
+  if (!k.enabled) return "disabled";
+  const e = k.expiresAt?.toDate ? k.expiresAt.toDate() : (k.expiresAt ? new Date(k.expiresAt) : null);
+  if (e && e.getTime() < Date.now()) return "expired";
+  return "active";
+}
+function fmt(ts) {
+  if (!ts) return "—";
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"});
+}
+function left(k) {
+  const e = k.expiresAt?.toDate ? k.expiresAt.toDate() : (k.expiresAt ? new Date(k.expiresAt) : null);
+  if (!e) return "—";
+  const d = Math.ceil((e.getTime()-Date.now())/86400000);
+  return d>0 ? d+"d" : "expired";
+}
+
+/* RENDER */
+function renderProfile() {
+  const p = PROFILE || {};
+  $("topName").textContent = p.username || "—";
+  $("profName").textContent = p.username || "—";
+  $("profEmail").textContent = p.email || "—";
+  $("profRole").textContent = ROLE;
+  $("myRef").textContent = p.ownReferralCode || "—";
+  $("newUn").value = p.username || "";
+}
+function renderHome() {
+  let a=0,d=0,e=0;
+  KD.forEach(k=>{ const s=kStatus(k); if(s==="active")a++; else if(s==="disabled")d++; else e++; });
+  $("sT").textContent = KD.length;
+  $("sA").textContent = a;
+  $("sE").textContent = e;
+  const list = KD.slice(0,5);
+  $("recent").innerHTML = list.length ? list.map(k=>{
+    const s = kStatus(k);
+    return `<div class="kcard"><div class="l1"><span class="kk">${esc(k.key)}</span><span class="tg ${s[0]}">${s}</span></div><div class="l2"><span>${fmt(k.expiresAt)}</span><span>${left(k)}</span></div></div>`;
+  }).join("") : '<div class="em">No keys yet</div>';
+}
+function renderK() {
+  const q = ($("q").value||"").toLowerCase();
+  const f = $("fs").value;
+  const list = KD.filter(k=>{
+    const s = kStatus(k);
+    if (f!=="all" && s!==f) return false;
+    if (!q) return true;
+    return (k.key||"").toLowerCase().includes(q) || (k.tier||"").toLowerCase().includes(q);
+  });
+  if (!list.length) { $("keys").innerHTML = '<div class="em">No keys</div>'; return; }
+  $("keys").innerHTML = list.map(k=>{
+    const s = kStatus(k);
+    return `<div class="kcard">
+      <div class="l1">
+        <span class="kk" data-cp="${esc(k.key)}">${esc(k.key)}</span>
+        <span class="tg ${s[0]}">${s}</span>
+      </div>
+      <div class="l2">
+        <span class="tg t">${esc(k.tier||"pro")}</span>
+        <span>${fmt(k.expiresAt)} · ${left(k)}</span>
+        <span>${(k.devices||[]).length}/${k.maxDevices||1} dev</span>
+      </div>
+      <div class="l3">
+        <button class="ic" data-tg="${k.id}" title="Toggle">${k.enabled?'⏸':'▶'}</button>
+        <button class="ic dg" data-dl="${k.id}" title="Delete">🗑</button>
+      </div>
+    </div>`;
+  }).join("");
+  $("keys").querySelectorAll("[data-cp]").forEach(el=>el.onclick=()=>{ navigator.clipboard.writeText(el.dataset.cp); toast("Copied "+el.dataset.cp); });
+  $("keys").querySelectorAll("[data-tg]").forEach(b=>b.onclick=async()=>{
+    const k = KD.find(x=>x.id===b.dataset.tg); if(!k)return;
+    await updateDoc(doc(db,"keys",k.id),{enabled:!k.enabled});
+    toast(k.enabled?"Disabled":"Enabled");
+  });
+  $("keys").querySelectorAll("[data-dl]").forEach(b=>b.onclick=async()=>{
+    const k = KD.find(x=>x.id===b.dataset.dl); if(!k)return;
+    if(!confirm("Delete "+k.key+"?"))return;
+    await deleteDoc(doc(db,"keys",k.id));
+    toast("Deleted");
+  });
+}
+function renderR() {
+  if (!RD.length) { $("refs").innerHTML = '<div class="em">No referral codes</div>'; return; }
+  $("refs").innerHTML = RD.map(r=>{
+    const u = r.uses||0, m = r.maxUses||0;
+    const s = !r.active?"disabled":(m>0&&u>=m?"expired":"active");
+    return `<div class="kcard">
+      <div class="l1">
+        <span class="kk" style="color:#c4a3ff" data-cpr="${esc(r.code)}">${esc(r.code)}</span>
+        <span class="tg ${s[0]}">${s}</span>
+      </div>
+      <div class="l2"><span>Uses: ${u}${m?"/"+m:""}</span><span>${esc(r.ownerUsername||"")}</span></div>
+      <div class="l3">
+        <button class="ic" data-rt="${esc(r.code)}">${r.active?'⏸':'▶'}</button>
+        <button class="ic dg" data-rd="${esc(r.code)}">🗑</button>
+      </div>
+    </div>`;
+  }).join("");
+  $("refs").querySelectorAll("[data-cpr]").forEach(el=>el.onclick=()=>{ navigator.clipboard.writeText(el.dataset.cpr); toast("Copied"); });
+  $("refs").querySelectorAll("[data-rt]").forEach(b=>b.onclick=async()=>{
+    const r = RD.find(x=>x.code===b.dataset.rt); if(!r)return;
+    await updateDoc(doc(db,"referrals",r.code),{active:!r.active});
+    toast(r.active?"Disabled":"Enabled");
+  });
+  $("refs").querySelectorAll("[data-rd]").forEach(b=>b.onclick=async()=>{
+    if(!confirm("Delete "+b.dataset.rd+"?"))return;
+    await deleteDoc(doc(db,"referrals",b.dataset.rd));
+    toast("Deleted");
+  });
+}
+function renderU() {
+  if (!UD.length) { $("users").innerHTML = '<div class="em">No users</div>'; return; }
+  $("users").innerHTML = UD.map(u=>`
+    <div class="kcard">
+      <div class="l1"><span style="font-weight:700">${esc(u.username||"—")}</span><span class="tg ${u.role==="owner"?"t":"a"}">${esc(u.role||"reseller")}</span></div>
+      <div class="l2"><span>${esc(u.email||"—")}</span><span>${fmt(u.createdAt)}</span></div>
+      ${u.id!==U.uid ? `<div class="l3">
+        <button class="ic" data-ur="${u.id}" data-cr="${esc(u.role||"reseller")}">🔄</button>
+        <button class="ic dg" data-ud="${u.id}">🗑</button>
+      </div>` : ""}
+    </div>
+  `).join("");
+  $("users").querySelectorAll("[data-ur]").forEach(b=>b.onclick=async()=>{
+    const next = b.dataset.cr==="owner"?"reseller":"owner";
+    await updateDoc(doc(db,"users",b.dataset.ur),{role:next});
+    toast("Role → "+next);
+  });
+  $("users").querySelectorAll("[data-ud]").forEach(b=>b.onclick=async()=>{
+    if(!confirm("Remove user?"))return;
+    await deleteDoc(doc(db,"users",b.dataset.ud));
+    toast("Removed");
+  });
+}
+
+/* FILTERS */
+$("q").oninput = renderK;
+$("fs").onchange = renderK;
+
+/* GENERATE KEY */
+$("btnGen").onclick = () => {
+  $("mbGen").classList.add("on");
+  $("gPv").textContent = newKey();
+  $("gExp").value = "";
+};
+$("btnDoGen").onclick = async () => {
+  const tier = $("gTier").value;
+  const days = parseInt($("gDays").value,10)||30;
+  const dev = parseInt($("gDev").value,10)||1;
+  const exp = $("gExp").value;
+  let expiresAt;
+  if (exp) expiresAt = Timestamp.fromDate(new Date(exp+"T23:59:59"));
+  else { const d=new Date(); d.setDate(d.getDate()+days); expiresAt = Timestamp.fromDate(d); }
+  const key = $("gPv").textContent;
+  $("btnDoGen").disabled=true; $("btnDoGen").innerHTML='<span class="sp"></span>';
+  try {
+    await addDoc(KEYS,{ key, tier, maxDevices:dev, devices:[], enabled:true, expiresAt, createdAt:serverTimestamp(), createdBy:U.uid, createdByEmail:U.email, createdByUsername:PROFILE?.username||"", referralUsed:PROFILE?.referredBy||null });
+    toast("Key generated");
+    $("mbGen").classList.remove("on");
+  } catch(e){ toast(clean(e.message),"err"); }
+  finally { $("btnDoGen").disabled=false; $("btnDoGen").textContent="Generate"; }
+};
+
+/* GENERATE REFERRAL */
+$("btnGenRef").onclick = () => {
+  $("mbGenRef").classList.add("on");
+  $("rPv").textContent = newRef();
+};
+$("btnDoRef").onclick = async () => {
+  const code = $("rPv").textContent;
+  const max = parseInt($("rMax").value,10)||0;
+  $("btnDoRef").disabled=true; $("btnDoRef").innerHTML='<span class="sp"></span>';
+  try {
+    await setDoc(doc(db,"referrals",code),{ code, ownerUid:U.uid, ownerUsername:PROFILE?.username||"", active:true, uses:0, maxUses:max, createdAt:serverTimestamp() });
+    toast("Referral created");
+    $("mbGenRef").classList.remove("on");
+  } catch(e){ toast(clean(e.message),"err"); }
+  finally { $("btnDoRef").disabled=false; $("btnDoRef").textContent="Generate"; }
+};
+
+/* ENDPOINT */
+$("btnSaveEp").onclick = async () => {
+  const url = $("epUrl").value.trim();
+  const ver = $("epVer").value.trim()||"2.0.0";
+  if (!/^https?:\/\//.test(url)) return toast("URL must start with http(s)://","err");
+  $("btnSaveEp").disabled=true; $("btnSaveEp").innerHTML='<span class="sp"></span>';
+  try {
+    await setDoc(CONFIG,{ url, version:ver, updatedAt:serverTimestamp() },{ merge:true });
+    toast("Endpoint saved");
+  } catch(e){ toast(clean(e.message),"err"); }
+  finally { $("btnSaveEp").disabled=false; $("btnSaveEp").textContent="Save Endpoint"; }
+};
+$("btnCopySnip").onclick = () => { navigator.clipboard.writeText($("snip").textContent); toast("Copied"); };
+
+/* PROFILE */
+$("btnUn").onclick = async () => {
+  const un = $("newUn").value.trim();
+  if (un.length<3) return toast("Too short","err");
+  if (!/^[a-zA-Z0-9_]+$/.test(un)) return toast("Letters/digits/_ only","err");
+  const d = await getDocs(query(USERS, where("username","==",un), limit(1)));
+  if (!d.empty && un !== PROFILE.username) return toast("Username taken","err");
+  await updateDoc(doc(db,"users",U.uid),{username:un});
+  if (PROFILE?.ownReferralCode) await updateDoc(doc(db,"referrals",PROFILE.ownReferralCode),{ownerUsername:un}).catch(()=>{});
+  toast("Username updated");
+};
+$("btnPw").onclick = async () => {
+  const c = $("cPw").value, n = $("nPw").value;
+  if (!c || n.length<6) return toast("Fill both fields","err");
+  $("btnPw").disabled=true; $("btnPw").innerHTML='<span class="sp"></span>';
+  try {
+    const cred = EmailAuthProvider.credential(U.email, c);
+    await reauthenticateWithCredential(U, cred);
+    await updatePassword(U, n);
+    toast("Password updated");
+    $("cPw").value=""; $("nPw").value="";
+  } catch(e){ toast(clean(e.message),"err"); }
+  finally { $("btnPw").disabled=false; $("btnPw").textContent="Update Password"; }
+};
+$("btnCopyRef").onclick = () => {
+  const c = PROFILE?.ownReferralCode;
+  if (!c) return;
+  navigator.clipboard.writeText(c);
+  toast("Copied "+c);
+};
+
+document.addEventListener("keydown", e => { if (e.key==="Escape") document.querySelectorAll(".mb.on").forEach(m=>m.classList.remove("on")); });
+</script>
+</body>
+</html>
