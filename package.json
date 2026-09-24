@@ -1,0 +1,8 @@
+{
+  "name": "kuro-panel",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "firebase-admin": "^12.5.0"
+  }
+}
